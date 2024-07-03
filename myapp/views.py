@@ -1,7 +1,13 @@
 from rest_framework import viewsets
 from .models import ProductCategory, ProductInventory, Product, CartItem, Users, UserAddress, OrderDetails
 from .serializers import ProductCategorySerializer, ProductInventorySerializer, ProductSerializer, CartItemSerializer, UserSerializer, UserAddressSerializer, OrderDetailsSerializer
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
 
+class UserRegistrationView(APIView):
+    def get(self, request, format=None):
+        return Response({'msg':'registration success'})
 class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
