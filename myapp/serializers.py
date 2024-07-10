@@ -1,6 +1,36 @@
 from rest_framework import serializers
 from myapp import models as model_file
 
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField(style={'input_type':'password'})
+    class Meta:
+        model = model_file.Users
+        fields = ['email','name','password','password2','tc']
+        extra_kwargs = {
+            'password':{'write_only':True}
+        }
+    #validating password
+    def validate(self, attrs):
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
+        if password != password2:
+            raise serializers.ValidationError("Password1 and 2 did't match")
+        return attrs
+
+    def create(self, validated_data):
+        return model_file.Users.objects.create_user(**validated_data)
+
+class UserLoginSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=100)
+    class Meta:
+        model = model_file.Users
+        fields = ["email","password"]
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = model_file.Users
+        fields = ["id", "email", "name"]
+
 class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = model_file.ProductCategory
