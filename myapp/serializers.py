@@ -26,10 +26,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
         model = model_file.Users
         fields = ["email","password"]
 
-class UserProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = model_file.Users
-        fields = ["id", "email", "name"]
+
 
 class ProductCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -58,8 +55,14 @@ class UserSerializer(serializers.ModelSerializer):
 class UserAddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = model_file.UserAddress
-        fields = '__all__'
+        # fields = '__all__'
+        fields = ['phone', 'address_line1', 'address_line2', 'city', 'postal_code']
 
+class UserProfileSerializer(serializers.ModelSerializer):
+    address = UserAddressSerializer()
+    class Meta:
+        model = model_file.Users
+        fields = ["id", "email", "name",'address']
 class OrderDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = model_file.OrderDetails

@@ -120,7 +120,6 @@ class UserAddress(models.Model):
     address_line2 = models.CharField(max_length=255, blank=True, null=True)
     city = models.CharField(max_length=255)
     postal_code = models.CharField(max_length=20)
-    email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     deleted = models.DateTimeField(blank=True, null=True)

@@ -41,10 +41,23 @@ class UserLoginView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class UserProfileView(APIView):
+class UserProfileView(APIView):   # it will return user info and address info
     permission_classes = [IsAuthenticated]
     def get(self,request, format=None):
-        serializer = UserProfileSerializer(request.user)
+        user = request.user
+        try:
+            user_address = UserAddress.objects.get(user=user)
+        except UserAddress.DoesNotExist:
+            user_address = None
+
+        user_data ={
+            'id':user.id,
+            'email':user.email,
+            "name": user.name,
+            "tc": user.tc,
+            "address": user_address
+        }
+        serializer = UserProfileSerializer(user_data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ProductCategoryViewSet(viewsets.ModelViewSet):
@@ -67,9 +80,26 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UserSerializer
 
-class UserAddressViewSet(viewsets.ModelViewSet):
-    queryset = UserAddress.objects.all()
-    serializer_class = UserAddressSerializer
+# class UserAddressViewSet(viewsets.ModelViewSet):
+#     # permission_classes = [IsAuthenticated]
+#     queryset = UserAddress.objects.all()
+#     serializer_class = UserAddressSerializer
+
+class UserAddressView(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request, format=None):
+        try:
+            user_address = UserAddress.objects.get(user=request.user)
+            serializer = UserAddressSerializer(user_address, data=request.data,partial=True)
+            message = "Address Updated"
+        except UserAddress.DoesNotExist:
+            serializer = UserAddressSerializer(data=request.data)
+            message = "Address Created"
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user=request.user)
+            return Response({"msg": message, "address":serializer.data},status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class OrderDetailsViewSet(viewsets.ModelViewSet):
     queryset = OrderDetails.objects.all()
