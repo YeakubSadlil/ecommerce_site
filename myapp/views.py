@@ -1,13 +1,14 @@
 from rest_framework import viewsets
 from .models import ProductCategory, ProductInventory, Product, CartItem, Users, UserAddress, OrderDetails
 from .serializers import (ProductCategorySerializer, ProductInventorySerializer, ProductSerializer,UserLoginSerializer, UserProfileSerializer,
-                          CartItemSerializer, UserSerializer, UserAddressSerializer, OrderDetailsSerializer,UserRegistrationSerializer)
+                          CartItemSerializer, UserSerializer, UserAddressSerializer, OrderDetailsSerializer,UserRegistrationSerializer,ProductResponse)
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+from django.http import JsonResponse
 
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
@@ -64,6 +65,11 @@ class ProductCategoryViewSet(viewsets.ModelViewSet):
     queryset = ProductCategory.objects.all()
     serializer_class = ProductCategorySerializer
 
+def productById(request,cat_id):
+    products = Product.objects.filter(category_id=cat_id)
+    serializer = ProductResponse(products,many=True)
+    return JsonResponse(serializer.data, safe=False)
+
 class ProductInventoryViewSet(viewsets.ModelViewSet):
     queryset = ProductInventory.objects.all()
     serializer_class = ProductInventorySerializer
@@ -79,11 +85,6 @@ class CartItemViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
     serializer_class = UserSerializer
-
-# class UserAddressViewSet(viewsets.ModelViewSet):
-#     # permission_classes = [IsAuthenticated]
-#     queryset = UserAddress.objects.all()
-#     serializer_class = UserAddressSerializer
 
 class UserAddressView(APIView):
     permission_classes = [IsAuthenticated]

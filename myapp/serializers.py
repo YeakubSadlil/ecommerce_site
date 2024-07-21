@@ -47,6 +47,11 @@ class CartItemSerializer(serializers.ModelSerializer):
         model = model_file.CartItem
         fields = '__all__'
 
+class ProductResponse(serializers.ModelSerializer):
+    class Meta:
+        model = model_file.Product
+        fields = '__all__'
+
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = model_file.Users

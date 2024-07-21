@@ -10,7 +10,6 @@ router.register('product-inventories', views.ProductInventoryViewSet)
 router.register('products', views.ProductViewSet)
 router.register('cart-items', views.CartItemViewSet)
 router.register('users', views.UserViewSet)
-# router.register('user-address', views.UserAddressViewSet)
 router.register('order-details', views.OrderDetailsViewSet)
 
 urlpatterns = [
