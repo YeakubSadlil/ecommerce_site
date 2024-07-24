@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
-
+from .pagination import CustomPagination
 def get_tokens_for_user(user):
     refresh = RefreshToken.for_user(user)
 
@@ -77,6 +77,7 @@ class ProductInventoryViewSet(viewsets.ModelViewSet):
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    pagination_class = CustomPagination
 
 class CartItemViewSet(viewsets.ModelViewSet):
     queryset = CartItem.objects.all()
